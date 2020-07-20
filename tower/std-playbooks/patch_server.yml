@@ -1,0 +1,14 @@
+---
+- name: Perform software update on node
+  hosts: webservers
+  gather_facts: false
+  become: yes
+  vars:
+
+  tasks:
+
+   - name: install the latest version of Apache
+     yum:
+       name: httpd
+       state: latest
+     become: yes
