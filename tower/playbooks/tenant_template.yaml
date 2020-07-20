@@ -7,7 +7,6 @@
   vars:
     tenant_body: "{{ lookup('file', '../app-templates/{{ f5_template }}.json', split_lines=False) }}"
     uri_method: "POST"
-    app_name: "{{ app_name }}"
 
   tasks:
 
@@ -19,5 +18,6 @@
        user: "admin"
        password: "W3lcome098!"
        validate_certs: no
+       vip_ip: "{{ vip_ip }}"
        body: "{{ lookup('template', '../j2/tenant_base.j2') }}"
        body_format: json

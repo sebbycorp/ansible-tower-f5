@@ -6,7 +6,7 @@
         "serviceMain": {
             "class": "Service_HTTP",
             "virtualAddresses": [
-                "{{ vip }}"
+                "{{ vip_ip}} "
             ],
             "pool": "web_pool"
         },
@@ -18,8 +18,8 @@
             "members": [{
                 "servicePort": 8001,
                 "serverAddresses": [
-                    "10.1.22.100",
-                    "10.1.22.101"
+                    "10.1.10.100",
+                    "10.1.10.101"
                 ]
             }]
         }
