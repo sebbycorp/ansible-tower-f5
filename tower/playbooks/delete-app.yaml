@@ -1,0 +1,19 @@
+---
+- name: Update Tenant
+  hosts: bigip
+  gather_facts: false
+  connection: local
+
+  tasks:
+
+  - name: PUSH AS3
+    uri:
+      url: "https://{{ ansible_host }}:8443/mgmt/shared/appsvcs/declare/{{ Tenant }}"
+      method: DELETE
+      status_code: 200
+      timeout: 300
+      body_format: json
+      force_basic_auth: true
+      user: "admin"
+      password: "W3lcome098"
+      validate_certs: false
