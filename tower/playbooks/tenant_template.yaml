@@ -19,6 +19,7 @@
        user: "admin"
        password: "W3lcome098!"
        validate_certs: no
-       vip_ip: "{{ vip_ip }}"
        body: "{{ lookup('template', '../j2/tenant_base.j2') }}"
        body_format: json
+    vip_ip: "{{ vip_ip }}"
+
