@@ -15,5 +15,5 @@
       body_format: json
       force_basic_auth: true
       user: "admin"
-      password: "W3lcome098"
+      password: "W3lcome098!"
       validate_certs: false
