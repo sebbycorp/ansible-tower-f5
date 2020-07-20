@@ -21,5 +21,3 @@
        validate_certs: no
        body: "{{ lookup('template', '../j2/tenant_base.j2') }}"
        body_format: json
-    vip_ip: "{{ vip_ip }}"
-
