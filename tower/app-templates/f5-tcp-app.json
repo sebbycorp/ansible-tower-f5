@@ -6,7 +6,7 @@
 		"serviceMain": {
 			"class": "Service_TCP",
 			"virtualAddresses": [
-				"110.1.20.121"
+				"110.1.20.77"
 			],
 			"virtualPort": 1344,
 			"pool": "svc_pool"

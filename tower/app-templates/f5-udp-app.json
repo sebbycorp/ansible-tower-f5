@@ -7,7 +7,7 @@
 			"class": "Service_UDP",
 			"virtualPort": 53,
 			"virtualAddresses": [
-				"10.1.20.121"
+				"10.1.20.88"
 			],
 			"pool": "Pool1"
 		},
@@ -20,7 +20,7 @@
 				"servicePort": 1344,
 				"serverAddresses": [
                     "10.1.10.47",
-                    "10.1.10.47"
+                    "10.1.10.66"
 				]
 			}]
 		}
