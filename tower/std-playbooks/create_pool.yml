@@ -1,31 +1,17 @@
 ---
-- name: BIG-IP SETUP
+
+- name: Create pool
   hosts: lb
   connection: local
-  gather_facts: false
-
-  tasks:
-    - name: Setting up provider values
-      set_fact:
-       provider:
-        server: "{{private_ip}}"
-        server_port: "8443"
-        validate_certs: "False"
   
-    - name: CREATE POOL
+  tasks:
+    - name: create app1 server pool
       bigip_pool:
-        provider: "{{provider}}"
-        name: "http_pool"
-        lb_method: "round-robin"
+        name: app1_p1
         monitors: "/Common/http"
-        monitor_type: "and_list"
-
-    - name: ADD POOL MEMBERS
-      bigip_pool_member:
-        provider: "{{provider}}"
-        state: "present"
-        name: "{{hostvars[item].inventory_hostname}}"
-        host: "{{hostvars[item].ansible_host}}"
-        port: "80"
-        pool: "http_pool"
-      loop: "{{ groups['webservers'] }}"
+        lb_method: round-robin
+        server: 192.168.90.200
+        user: admin
+        password: W3lcome098!
+        validate_certs: no
+      delegate_to: localhost

@@ -1,20 +1,21 @@
 ---
 - name: BIG-IP SETUP
-  hosts: webapp
+  hosts: lb
   connection: local
   gather_facts: false
 
   tasks:
-
-  - name: CREATE NODES
-    bigip_node:
-      provider:
+    - name: Setting up provider values
+      set_fact:
+       provider:
         server: "{{private_ip}}"
-        user: "{{ansible_user}}"
-        password: "{{ansible_ssh_pass}}"
-        server_port: 443
-        validate_certs: false
-      host: "{{hostvars[item].ansible_host}}"
-      name: "{{hostvars[item].inventory_hostname}}"
-    loop: "{{ groups['web'] }}"
+        server_port: "8443"
+        validate_certs: "False"
+  
+    - name: CREATE NODES
+      bigip_node:
+        provider: "{{provider}}"
+        host: "{{hostvars[item].ansible_host}}"
+        name: "{{hostvars[item].inventory_hostname}}"
+      loop: "{{ groups['webservers'] }}"
 
