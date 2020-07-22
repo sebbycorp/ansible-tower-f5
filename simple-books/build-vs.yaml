@@ -1,9 +1,8 @@
 ---
 - name: BIG-IP SETUP
-  hosts: localhost
-  connection: local
-  gather_facts: false
-
+    hosts: localhost
+    connection: local
+    gather_facts: false
 
 
   tasks:
