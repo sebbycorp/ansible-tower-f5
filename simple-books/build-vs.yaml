@@ -1,61 +1,55 @@
 ---
-- name: Create pool
-    hosts: bigip
-    connection: local
+- name: BIG-IP SETUP
+  hosts: localhost
+  connection: local
+  gather_facts: false
 
-    vars:
-    provider:
-        password: W3lcome098!
+
+
+  tasks:
+    - name: Setting up provider values
+      set_fact:
+       provider:
         server: 192.168.90.200
-        user: admin
-        validate_certs: no
-        server_port: 443
+        server_port: "443"
+        validate_certs: "False"
+  
+    - name: CREATE NODES
+      bigip_node:
+        provider: "{{provider}}"
+        host: "{{hostvars[item].ansible_host}}"
+        name: "{{hostvars[item].inventory_hostname}}"
+      loop: "{{ groups['webservers'] }}"
 
-
-    tasks:
-    - name: Create a pool
-        bigip_pool:
-        provider: "{{ provider }}"
-        lb_method: ratio-member
-        name: app1_pl
-        slow_ramp_time: 120
+    - name: CREATE POOL
+      bigip_pool:
+        provider: "{{provider}}"
+        name: "http_pool"
+        lb_method: "round-robin"
         monitors: "/Common/http"
-        delegate_to: localhost
+        monitor_type: "and_list"
 
-    - name: Add members to pool
-        bigip_pool_member:
-        provider: "{{ provider }}"
-        description: "webserver {{ item.name }}"
-        host: "{{ item.host }}"
-        name: "{{ item.name }}"
-        pool: app1_pl
+    - name: ADD POOL MEMBERS
+      bigip_pool_member:
+        provider: "{{provider}}"
+        state: "present"
+        name: "{{hostvars[item].inventory_hostname}}"
+        host: "{{hostvars[item].ansible_host}}"
         port: "80"
-        with_items:
-        - host: 10.1.30.12
-            name: app12
-        - host: 10.1.30.13
-            name: app12
-        delegate_to: localhost
+        pool: "http_pool"
+      loop: "{{ groups['webservers'] }}"
 
-    - name: Create a VIP
-        bigip_virtual_server:
-        provider: "{{ provider }}"
-        description: app1_vip
-        destination: 172.16.30.101
-        name: vip-app1
-        pool: app1_pl
-        port: 80
-        snat: Automap
-        profiles:
-            - http
-            - clientssl
-        delegate_to: localhost
-        
-    - name: Save the running configuration of the BIG-IP
-        bigip_config:
-        save: yes
-        server: 192.168.1.100
-        password: admin
-        user: admin
-        validate_certs: no
-        delegate_to: localhost
+    - name: ADD VIRTUAL SERVER
+      bigip_virtual_server:
+        provider: "{{provider}}"
+        name: "vip"
+        destination: "{{private_ip}}"
+        port: "443"
+        enabled_vlans: "all"
+        all_profiles: ['http','clientssl','oneconnect']
+        pool: "http_pool"
+        snat: "Automap"
+
+    - name: PRINT OUT WEB VIP FOR F5
+      debug:
+        msg: "The VIP (Virtual IP) is https://{{ansible_host}}"

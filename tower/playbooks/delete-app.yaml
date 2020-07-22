@@ -1,19 +1,21 @@
 ---
-- name: Update Tenant
-  hosts: bigip
-  gather_facts: false
+- name: GRAB F5 FACTS
+  hosts: lb
   connection: local
+  gather_facts: false
+  vars:
+    provider:
+      server: 192.168.90.200
+      user: admin
+      password: W3lcome098!
+      server_port: 443
+      validate_certs: false
 
   tasks:
+    - name: Create a pool
+      bigip_pool:
+        provider: "{{ provider }}"
+        lb_method: ratio-member
+        name: web
+        slow_ramp_time: 120
 
-  - name: PUSH AS3
-    uri:
-      url: "https://{{ ansible_host }}:443/mgmt/shared/appsvcs/declare/{{ Tenant }}"
-      method: DELETE
-      status_code: 200
-      timeout: 300
-      body_format: json
-      force_basic_auth: true
-      user: "admin"
-      password: "W3lcome098!"
-      validate_certs: false

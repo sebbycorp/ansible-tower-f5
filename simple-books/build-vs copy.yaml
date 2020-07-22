@@ -1,0 +1,21 @@
+---
+- name: GRAB F5 FACTS
+    hosts: lb
+    connection: local
+    gather_facts: false
+    vars:
+    provider:
+        server: 192.168.90.200
+        user: admin
+        password: W3lcome098!
+        server_port: 443
+        validate_certs: false
+
+    tasks:
+    - name: Create a pool
+        bigip_pool:
+        provider: "{{ provider }}"
+        lb_method: ratio-member
+        name: web
+        slow_ramp_time: 120
+
