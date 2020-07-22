@@ -1,0 +1,61 @@
+---
+- name: Create pool
+    hosts: bigip
+    connection: local
+
+    vars:
+    provider:
+        password: W3lcome098!
+        server: 192.168.90.200
+        user: admin
+        validate_certs: no
+        server_port: 443
+
+
+    tasks:
+    - name: Create a pool
+        bigip_pool:
+        provider: "{{ provider }}"
+        lb_method: ratio-member
+        name: app1_pl
+        slow_ramp_time: 120
+        monitors: "/Common/http"
+        delegate_to: localhost
+
+    - name: Add members to pool
+        bigip_pool_member:
+        provider: "{{ provider }}"
+        description: "webserver {{ item.name }}"
+        host: "{{ item.host }}"
+        name: "{{ item.name }}"
+        pool: app1_pl
+        port: "80"
+        with_items:
+        - host: 10.1.30.12
+            name: app12
+        - host: 10.1.30.13
+            name: app12
+        delegate_to: localhost
+
+    - name: Create a VIP
+        bigip_virtual_server:
+        provider: "{{ provider }}"
+        description: app1_vip
+        destination: 172.16.30.101
+        name: vip-app1
+        pool: app1_pl
+        port: 80
+        snat: Automap
+        profiles:
+            - http
+            - clientssl
+        delegate_to: localhost
+        
+    - name: Save the running configuration of the BIG-IP
+        bigip_config:
+        save: yes
+        server: 192.168.1.100
+        password: admin
+        user: admin
+        validate_certs: no
+        delegate_to: localhost
