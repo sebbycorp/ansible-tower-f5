@@ -7,7 +7,7 @@
   vars:
     tenant_body: "{{ lookup('file', '../app-templates/{{ f5_template }}.json', split_lines=False) }}"
     uri_method: "POST"
-    vip_ip: "{{vip_ip}}"
+
 
   tasks:
 
